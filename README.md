@@ -28,5 +28,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 <img width="1419" height="720" alt="image" src="https://github.com/user-attachments/assets/f98211dc-64aa-4a2b-8c1c-4400fd11a42a" />
 
-login page 
+ <img width="1599" height="756" alt="image" src="https://github.com/user-attachments/assets/f2c79cf7-53a4-435e-815b-a9267174d5d8" />
+
+<img width="1597" height="753" alt="image" src="https://github.com/user-attachments/assets/8b2a291a-1c8f-492d-ab28-0bc18b5875de" />
+
+  <img width="1599" height="762" alt="image" src="https://github.com/user-attachments/assets/b1e8a429-4655-4e6b-84af-9e6162c97193" />
 
