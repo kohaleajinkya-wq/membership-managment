@@ -34,3 +34,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
   <img width="1599" height="762" alt="image" src="https://github.com/user-attachments/assets/b1e8a429-4655-4e6b-84af-9e6162c97193" />
 
+  
+  <img width="1599" height="754" alt="image" src="https://github.com/user-attachments/assets/67855341-ad97-47c5-aeae-8e981c1e0bd5" />
+
+
