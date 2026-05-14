@@ -1,0 +1,73 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h4 mb-0">Membership plans</h1>
+    <p class="text-muted small mb-0">Name, price, duration, PT, freeze option.</p>
+  </div>
+  <button type="button" class="btn btn-primary btn-sm" (click)="startNew()" *ngIf="!draft">New plan</button>
+</div>
+
+<div class="card shadow-sm mb-3" *ngIf="draft">
+  <div class="card-body">
+    <h2 class="h6">{{ draft.id ? 'Edit plan' : 'New plan' }}</h2>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label class="small font-weight-bold">Plan name</label>
+        <input class="form-control form-control-sm" [(ngModel)]="draft.name" name="pn" />
+      </div>
+      <div class="form-group col-md-2">
+        <label class="small font-weight-bold">Price (₹)</label>
+        <input type="number" class="form-control form-control-sm" [(ngModel)]="draft.price" name="pr" />
+      </div>
+      <div class="form-group col-md-2">
+        <label class="small font-weight-bold">Duration (months)</label>
+        <input type="number" class="form-control form-control-sm" [(ngModel)]="draft.durationMonths" name="dm" />
+      </div>
+      <div class="form-group col-md-2 d-flex align-items-end">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="pt" [(ngModel)]="draft.ptIncluded" name="pt" />
+          <label class="custom-control-label small" for="pt">PT included</label>
+        </div>
+      </div>
+      <div class="form-group col-md-2 d-flex align-items-end">
+        <div class="custom-control custom-checkbox">
+          <input type="checkbox" class="custom-control-input" id="fr" [(ngModel)]="draft.freezeAllowed" name="fr" />
+          <label class="custom-control-label small" for="fr">Freeze option</label>
+        </div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm mr-2" (click)="save()">Save</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancel()">Cancel</button>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Months</th>
+            <th>PT</th>
+            <th>Freeze</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of plans$ | async">
+            <td>{{ p.name }}</td>
+            <td>₹{{ p.price | number }}</td>
+            <td>{{ p.durationMonths }}</td>
+            <td>{{ p.ptIncluded ? 'Yes' : 'No' }}</td>
+            <td>{{ p.freezeAllowed ? 'Yes' : 'No' }}</td>
+            <td class="text-right">
+              <button type="button" class="btn btn-outline-primary btn-sm mr-1" (click)="startEdit(p)">Edit</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="remove(p)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

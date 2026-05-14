@@ -1,0 +1,32 @@
+<div class="layout d-flex min-vh-100">
+  <aside class="sidebar border-right bg-dark text-white" [class.collapsed]="navCollapsed">
+    <div class="sidebar-brand p-3 d-flex align-items-center justify-content-between">
+      <span class="font-weight-bold" *ngIf="!navCollapsed">Gym Manager</span>
+      <span class="font-weight-bold" *ngIf="navCollapsed">GM</span>
+      <button type="button" class="btn btn-sm btn-outline-light d-md-none" (click)="toggleNav()">☰</button>
+    </div>
+    <nav class="nav flex-column px-2 pb-3">
+      <a class="nav-link text-white-50" routerLink="/app/dashboard" routerLinkActive="active text-white">Dashboard</a>
+      <a class="nav-link text-white-50" routerLink="/app/members" routerLinkActive="active text-white">Members</a>
+      <a class="nav-link text-white-50" routerLink="/app/plans" routerLinkActive="active text-white">Plans</a>
+      <a class="nav-link text-white-50" routerLink="/app/payments" routerLinkActive="active text-white">Payments</a>
+      <a class="nav-link text-white-50" routerLink="/app/attendance" routerLinkActive="active text-white">Attendance</a>
+      <a class="nav-link text-white-50" routerLink="/app/trainers" routerLinkActive="active text-white">Trainers</a>
+      <a class="nav-link text-white-50" routerLink="/app/workouts" routerLinkActive="active text-white">Workouts &amp; Diet</a>
+      <a class="nav-link text-white-50" routerLink="/app/reports" routerLinkActive="active text-white">Reports</a>
+      <a class="nav-link text-white-50" routerLink="/app/settings" routerLinkActive="active text-white">Settings</a>
+    </nav>
+  </aside>
+  <div class="flex-fill d-flex flex-column">
+    <header class="topbar border-bottom bg-white d-flex align-items-center justify-content-between px-3 py-2">
+      <button type="button" class="btn btn-outline-secondary btn-sm d-none d-md-inline" (click)="toggleNav()">Menu</button>
+      <div class="small text-muted" *ngIf="auth.currentUser() as u">
+        Signed in as <strong>{{ u.name }}</strong> ({{ u.role }})
+      </div>
+      <button type="button" class="btn btn-outline-danger btn-sm" (click)="auth.logout()">Logout</button>
+    </header>
+    <main class="flex-fill p-3 bg-light">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

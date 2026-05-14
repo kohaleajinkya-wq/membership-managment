@@ -1,0 +1,103 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h4 mb-0">Trainers</h1>
+    <p class="text-muted small mb-0">Staff, assign members, schedules, salary.</p>
+  </div>
+</div>
+
+<div class="card shadow-sm mb-3" *ngIf="draft">
+  <div class="card-body">
+    <h2 class="h6">{{ draft.id ? 'Edit trainer' : 'New trainer' }}</h2>
+    <div class="form-row">
+      <div class="form-group col-md-4">
+        <label class="small font-weight-bold">Name</label>
+        <input class="form-control form-control-sm" [(ngModel)]="draft.name" name="tn" />
+      </div>
+      <div class="form-group col-md-4">
+        <label class="small font-weight-bold">Phone</label>
+        <input class="form-control form-control-sm" [(ngModel)]="draft.phone" name="tp" />
+      </div>
+      <div class="form-group col-md-4">
+        <label class="small font-weight-bold">Monthly salary (₹)</label>
+        <input type="number" class="form-control form-control-sm" [(ngModel)]="draft.salaryMonthly" name="ts" />
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="small font-weight-bold">Specialty</label>
+      <input class="form-control form-control-sm" [(ngModel)]="draft.specialty" name="tsp" />
+    </div>
+    <div class="form-group">
+      <label class="small font-weight-bold">Schedule notes</label>
+      <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="draft.scheduleNotes" name="tsch"></textarea>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm mr-2" (click)="save()">Save</button>
+    <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancel()">Cancel</button>
+  </div>
+</div>
+
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="d-flex justify-content-end mb-2" *ngIf="!draft">
+    <button type="button" class="btn btn-primary btn-sm" (click)="startNew()">Add trainer</button>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Specialty</th>
+            <th>Salary / mo</th>
+            <th>Members</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let t of vm.trainers">
+            <td>{{ t.name }}</td>
+            <td>{{ t.phone }}</td>
+            <td>{{ t.specialty }}</td>
+            <td>₹{{ t.salaryMonthly | number }}</td>
+            <td class="small">
+              <span *ngIf="!t.memberIds.length" class="text-muted">—</span>
+              <span *ngFor="let id of t.memberIds; let last = last">{{ memberName(id, vm.members) }}<span *ngIf="!last">, </span></span>
+            </td>
+            <td class="text-right text-nowrap">
+              <button type="button" class="btn btn-outline-secondary btn-sm mr-1" (click)="openAssign(t)">Assign</button>
+              <button type="button" class="btn btn-outline-primary btn-sm mr-1" (click)="startEdit(t)">Edit</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="remove(t)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal d-block" tabindex="-1" *ngIf="assigning" style="background: rgba(0, 0, 0, 0.4)">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Assign members — {{ assigning.name }}</h5>
+          <button type="button" class="close" (click)="cancelAssign()"><span>&times;</span></button>
+        </div>
+        <div class="modal-body" style="max-height: 360px; overflow: auto">
+          <div class="custom-control custom-checkbox mb-2" *ngFor="let m of vm.members">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              [id]="'tm-' + m.id"
+              [checked]="!!assignSelection[m.id]"
+              (change)="toggle(m.id)"
+            />
+            <label class="custom-control-label small" [for]="'tm-' + m.id">{{ m.name }} — {{ m.phone }}</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancelAssign()">Cancel</button>
+          <button type="button" class="btn btn-primary btn-sm" (click)="saveAssign()">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-container>

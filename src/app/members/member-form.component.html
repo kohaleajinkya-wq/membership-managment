@@ -1,0 +1,77 @@
+<div class="modal-header">
+  <h4 class="modal-title">{{ member ? 'Edit member' : 'Add member' }}</h4>
+  <button type="button" class="close" aria-label="Close" (click)="cancel()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label class="small font-weight-bold">Name</label>
+      <input class="form-control form-control-sm" [(ngModel)]="model.name" name="name" />
+    </div>
+    <div class="form-group col-md-3">
+      <label class="small font-weight-bold">Age</label>
+      <input type="number" class="form-control form-control-sm" [(ngModel)]="model.age" name="age" />
+    </div>
+    <div class="form-group col-md-3">
+      <label class="small font-weight-bold">Gender</label>
+      <select class="form-control form-control-sm" [(ngModel)]="model.gender" name="gender">
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label class="small font-weight-bold">Weight (kg)</label>
+      <input type="number" class="form-control form-control-sm" [(ngModel)]="model.weightKg" name="w" />
+    </div>
+    <div class="form-group col-md-4">
+      <label class="small font-weight-bold">Phone</label>
+      <input class="form-control form-control-sm" [(ngModel)]="model.phone" name="phone" />
+    </div>
+    <div class="form-group col-md-4">
+      <label class="small font-weight-bold">RFID tag</label>
+      <input class="form-control form-control-sm" [(ngModel)]="model.rfidTag" name="rfid" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-4">
+      <label class="small font-weight-bold">Join date</label>
+      <input type="date" class="form-control form-control-sm" [(ngModel)]="model.joinDate" name="jd" />
+    </div>
+    <div class="form-group col-md-4">
+      <label class="small font-weight-bold">Plan</label>
+      <select class="form-control form-control-sm" [ngModel]="model.planId" (ngModelChange)="onPlanChange($event)" name="plan">
+        <option *ngFor="let p of plans" [value]="p.id">{{ p.name }} — ₹{{ p.price }}</option>
+      </select>
+    </div>
+    <div class="form-group col-md-4">
+      <label class="small font-weight-bold">Expiry date</label>
+      <input type="date" class="form-control form-control-sm" [(ngModel)]="model.expiryDate" name="ex" />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label class="small font-weight-bold">Emergency contact name</label>
+      <input class="form-control form-control-sm" [(ngModel)]="model.emergencyContactName" name="ecn" />
+    </div>
+    <div class="form-group col-md-6">
+      <label class="small font-weight-bold">Emergency contact phone</label>
+      <input class="form-control form-control-sm" [(ngModel)]="model.emergencyContactPhone" name="ecp" />
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="small font-weight-bold">Profile photo</label>
+    <input type="file" accept="image/*" class="form-control-file" (change)="onPhotoSelected($event)" />
+    <div class="mt-2" *ngIf="model.photoUrl">
+      <img [src]="model.photoUrl" alt="Preview" class="img-thumbnail" style="max-height: 120px" />
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancel()">Cancel</button>
+  <button type="button" class="btn btn-primary btn-sm" (click)="save()">Save</button>
+</div>

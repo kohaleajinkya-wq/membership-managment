@@ -1,0 +1,13 @@
+.member-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+}
+
+.member-overlay .modal {
+  pointer-events: none;
+}
+
+.member-overlay .modal-dialog {
+  pointer-events: auto;
+}

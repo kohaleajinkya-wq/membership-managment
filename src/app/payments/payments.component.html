@@ -1,0 +1,106 @@
+<h1 class="h4 mb-1">Payments &amp; billing</h1>
+<p class="text-muted small mb-3">Collect fees, track UPI/Cash/Card, invoices, history. Reminders hook to WhatsApp/SMS in production.</p>
+
+<div class="alert alert-info small" *ngIf="vm$ | async as vm">
+  <strong>Reminders:</strong> auto expiry / payment reminders can call your WhatsApp Business API or SMS provider (Twilio, MSG91). This UI is front-end only — schedule jobs on the server.
+</div>
+
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="row">
+    <div class="col-lg-5 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h6">Collect fee</h2>
+          <div class="form-group">
+            <label class="small font-weight-bold">Member</label>
+            <select class="form-control form-control-sm" [(ngModel)]="memberId" name="mid">
+              <option value="">Select…</option>
+              <option *ngFor="let m of vm.members" [value]="m.id">{{ m.name }} — {{ m.phone }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="small font-weight-bold">Amount (₹)</label>
+            <input type="number" class="form-control form-control-sm" [(ngModel)]="amount" name="amt" />
+          </div>
+          <div class="form-group">
+            <label class="small font-weight-bold">Method</label>
+            <select class="form-control form-control-sm" [(ngModel)]="method" name="meth">
+              <option value="UPI">UPI</option>
+              <option value="Cash">Cash</option>
+              <option value="Card">Card</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="small font-weight-bold">Note</label>
+            <input class="form-control form-control-sm" [(ngModel)]="note" name="note" />
+          </div>
+          <button type="button" class="btn btn-primary btn-sm" (click)="collect()">Record payment</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-7 mb-3">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h2 class="h6">Pending / renew soon</h2>
+          <p class="text-muted small">Members with expiry within 30 days (demo rule).</p>
+          <ul class="list-unstyled small mb-0">
+            <li *ngFor="let m of vm.pendingMembers" class="mb-1">
+              <strong>{{ m.name }}</strong> — expires {{ m.expiryDate }} — {{ m.phone }}
+            </li>
+            <li *ngIf="!vm.pendingMembers.length" class="text-muted">No members in this window.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header py-2 d-flex justify-content-between align-items-center">
+      <span class="font-weight-bold small mb-0">Payment history</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Invoice</th>
+            <th>Member</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of vm.payments">
+            <td>{{ p.date }}</td>
+            <td>{{ p.invoiceNo }}</td>
+            <td>{{ memberName(p.memberId, vm.members) }}</td>
+            <td>₹{{ p.amount | number }}</td>
+            <td>{{ p.method }}</td>
+            <td class="text-right">
+              <button type="button" class="btn btn-link btn-sm p-0 mr-2" (click)="showInvoice(p, vm.members)">View</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>
+
+<div class="modal d-block" tabindex="-1" *ngIf="invoicePreview" style="background: rgba(0, 0, 0, 0.4)">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Invoice</h5>
+        <button type="button" class="close" (click)="closeInvoice()"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <pre class="small mb-0">{{ invoicePreview }}</pre>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary btn-sm" (click)="closeInvoice()">Close</button>
+        <button type="button" class="btn btn-primary btn-sm" (click)="printInvoice()">Print</button>
+      </div>
+    </div>
+  </div>
+</div>

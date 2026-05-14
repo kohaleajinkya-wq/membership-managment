@@ -1,0 +1,80 @@
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div>
+    <h1 class="h4 mb-0">Workouts &amp; diet</h1>
+    <p class="text-muted small mb-0">Assign plans, diet notes, progress / weight updates.</p>
+  </div>
+</div>
+
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="card shadow-sm mb-3" *ngIf="draft">
+    <div class="card-body">
+      <h2 class="h6">{{ draft.id ? 'Edit assignment' : 'New assignment' }}</h2>
+      <div class="form-row">
+        <div class="form-group col-md-4">
+          <label class="small font-weight-bold">Member</label>
+          <select class="form-control form-control-sm" [(ngModel)]="draft.memberId" name="wm">
+            <option value="">Select…</option>
+            <option *ngFor="let m of vm.members" [value]="m.id">{{ m.name }}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-4">
+          <label class="small font-weight-bold">Title</label>
+          <input class="form-control form-control-sm" [(ngModel)]="draft.title" name="wt" />
+        </div>
+        <div class="form-group col-md-4">
+          <label class="small font-weight-bold">Last weight (kg)</label>
+          <input type="number" class="form-control form-control-sm" [(ngModel)]="draft.lastWeightKg" name="ww" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="small font-weight-bold">Workout notes</label>
+        <textarea class="form-control form-control-sm" rows="3" [(ngModel)]="draft.notes" name="wn"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="small font-weight-bold">Diet chart / notes</label>
+        <textarea class="form-control form-control-sm" rows="2" [(ngModel)]="draft.dietNotes" name="wd"></textarea>
+        <small class="text-muted">File uploads can plug into your storage API later.</small>
+      </div>
+      <button type="button" class="btn btn-primary btn-sm mr-2" (click)="save()">Save</button>
+      <button type="button" class="btn btn-outline-secondary btn-sm" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end mb-2" *ngIf="!draft">
+    <button type="button" class="btn btn-primary btn-sm" (click)="startNew()">New assignment</button>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Plan</th>
+            <th>Weight</th>
+            <th>Updated</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let w of vm.workouts">
+            <td>{{ memberName(w.memberId, vm.members) }}</td>
+            <td>
+              <div class="font-weight-bold">{{ w.title }}</div>
+              <div class="small text-muted text-truncate" style="max-width: 280px">{{ w.notes }}</div>
+            </td>
+            <td>{{ w.lastWeightKg != null ? w.lastWeightKg + ' kg' : '—' }}</td>
+            <td>{{ w.updatedAt }}</td>
+            <td class="text-right text-nowrap">
+              <button type="button" class="btn btn-outline-primary btn-sm mr-1" (click)="startEdit(w)">Edit</button>
+              <button type="button" class="btn btn-outline-danger btn-sm" (click)="remove(w)">Delete</button>
+            </td>
+          </tr>
+          <tr *ngIf="!vm.workouts.length">
+            <td colspan="5" class="text-muted small">No workout rows yet.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>

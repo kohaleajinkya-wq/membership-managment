@@ -1,0 +1,54 @@
+<h1 class="h4 mb-3">Dashboard</h1>
+<p class="text-muted small mb-4">Quick overview for today and this month.</p>
+
+<div class="row" *ngIf="stats$ | async as s">
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Total members</div>
+        <div class="display-4">{{ s.totalMembers }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Active memberships</div>
+        <div class="display-4">{{ s.activeMemberships }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Expiring in 14 days</div>
+        <div class="display-4 text-warning">{{ s.expiringSoon }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Today's attendance</div>
+        <div class="display-4">{{ s.todayAttendance }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Monthly revenue (paid)</div>
+        <div class="display-4 text-success">₹{{ s.monthlyRevenue | number }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 mb-3">
+    <div class="card shadow-sm h-100">
+      <div class="card-body">
+        <div class="text-muted small">Pending dues (estimate)</div>
+        <div class="display-4 text-danger">₹{{ s.pendingPayments | number }}</div>
+        <div class="small text-muted mt-2">Wire this to real billing rules when backend is ready.</div>
+      </div>
+    </div>
+  </div>
+</div>

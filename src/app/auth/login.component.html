@@ -1,0 +1,27 @@
+<div class="login-wrap d-flex align-items-center justify-content-center min-vh-100 bg-light">
+  <div class="card shadow-sm login-card">
+    <div class="card-body p-4">
+      <h1 class="h4 mb-1">Gym Manager</h1>
+      <p class="text-muted small mb-4">Sign in as admin, trainer, or member (demo — any non-empty password).</p>
+
+      <div class="form-group">
+        <label class="small font-weight-bold">Role</label>
+        <select class="form-control" [(ngModel)]="role" name="role">
+          <option value="admin">Admin / Owner</option>
+          <option value="trainer">Trainer</option>
+          <option value="member">Member</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="small font-weight-bold">Display name</label>
+        <input class="form-control" [(ngModel)]="displayName" name="name" placeholder="Optional" />
+      </div>
+      <div class="form-group">
+        <label class="small font-weight-bold">Password</label>
+        <input type="password" class="form-control" [(ngModel)]="password" name="pw" placeholder="Enter anything" />
+      </div>
+      <button type="button" class="btn btn-primary btn-block" (click)="submit()">Login</button>
+      <a routerLink="/forgot-password" class="d-block text-center small mt-3">Forgot password?</a>
+    </div>
+  </div>
+</div>

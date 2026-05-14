@@ -1,0 +1,13 @@
+.sidebar {
+  min-width: 220px;
+  transition: min-width 0.2s ease;
+}
+.sidebar.collapsed {
+  min-width: 72px;
+}
+.sidebar .nav-link {
+  border-radius: 0.25rem;
+}
+.sidebar .nav-link.active {
+  background: rgba(255, 255, 255, 0.12);
+}

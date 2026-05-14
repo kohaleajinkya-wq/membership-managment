@@ -1,0 +1,138 @@
+<h1 class="h4 mb-1">Attendance</h1>
+<p class="text-muted small mb-3">QR, phone, RFID, manual check-in — daily list, history, peak times.</p>
+
+<ng-container *ngIf="vm$ | async as vm">
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tab === 'Manual'" (click)="tab = 'Manual'" href="javascript:void(0)">Manual</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tab === 'Phone'" (click)="tab = 'Phone'" href="javascript:void(0)">Mobile number</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tab === 'RFID'" (click)="tab = 'RFID'" href="javascript:void(0)">RFID card</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tab === 'QR'" (click)="tab = 'QR'" href="javascript:void(0)">QR code</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tab === 'History'" (click)="tab = 'History'" href="javascript:void(0)">Visit history</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [class.active]="tab === 'Peak'" (click)="tab = 'Peak'" href="javascript:void(0)">Peak timing</a>
+    </li>
+  </ul>
+
+  <div class="card shadow-sm mb-3" *ngIf="tab === 'Manual'">
+    <div class="card-body">
+      <div class="form-row align-items-end">
+        <div class="form-group col-md-6 mb-0">
+          <label class="small font-weight-bold">Member</label>
+          <select class="form-control form-control-sm" [(ngModel)]="selectedMemberId" name="sm">
+            <option value="">Select…</option>
+            <option *ngFor="let m of vm.members" [value]="m.id">{{ m.name }} — {{ m.phone }}</option>
+          </select>
+        </div>
+        <div class="form-group col-md-6 mb-0">
+          <button type="button" class="btn btn-primary btn-sm mt-3 mt-md-0" (click)="checkIn('Manual', vm.members)">Check in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3" *ngIf="tab === 'Phone'">
+    <div class="card-body">
+      <label class="small font-weight-bold">Phone (partial match)</label>
+      <div class="input-group input-group-sm" style="max-width: 360px">
+        <input class="form-control" [(ngModel)]="phoneQuery" name="pq" placeholder="98765…" />
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button" (click)="checkIn('Phone', vm.members)">Check in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3" *ngIf="tab === 'RFID'">
+    <div class="card-body">
+      <label class="small font-weight-bold">RFID tag</label>
+      <div class="input-group input-group-sm" style="max-width: 360px">
+        <input class="form-control" [(ngModel)]="rfidQuery" name="rq" placeholder="RF-1001" />
+        <div class="input-group-append">
+          <button class="btn btn-primary" type="button" (click)="checkIn('RFID', vm.members)">Check in</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3" *ngIf="tab === 'QR'">
+    <div class="card-body">
+      <p class="small text-muted mb-2">Select a member, then encode this payload in your QR (or use a USB scanner that types the JSON).</p>
+      <div class="form-group">
+        <select class="form-control form-control-sm" style="max-width: 360px" [(ngModel)]="selectedMemberId" (ngModelChange)="buildQr(vm.members)" name="sq">
+          <option value="">Select member…</option>
+          <option *ngFor="let m of vm.members" [value]="m.id">{{ m.name }}</option>
+        </select>
+      </div>
+      <pre class="bg-white border rounded p-2 small" *ngIf="qrPayload">{{ qrPayload }}</pre>
+      <button type="button" class="btn btn-primary btn-sm mt-2" [disabled]="!selectedMemberId" (click)="checkIn('QR', vm.members)">Record QR check-in</button>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3" *ngIf="tab === 'History'">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-sm mb-0">
+          <thead>
+            <tr>
+              <th>When</th>
+              <th>Member</th>
+              <th>Method</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let a of vm.attendance">
+              <td class="text-nowrap">{{ a.checkIn | slice:0:16 }}</td>
+              <td>{{ memberName(a.memberId, vm.members) }}</td>
+              <td>{{ a.method }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm mb-3" *ngIf="tab === 'Peak'">
+    <div class="card-body">
+      <p class="small text-muted">Check-ins by hour (local time), top buckets.</p>
+      <ul class="list-unstyled mb-0">
+        <li *ngFor="let p of vm.peak"><strong>{{ p.hour }}:00</strong> — {{ p.count }} visits</li>
+        <li *ngIf="!vm.peak.length" class="text-muted">Not enough data.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-header py-2 font-weight-bold small">Today's attendance</div>
+    <div class="table-responsive">
+      <table class="table table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Member</th>
+            <th>Method</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let a of vm.todayRows">
+            <td>{{ a.checkIn | slice:11:16 }}</td>
+            <td>{{ memberName(a.memberId, vm.members) }}</td>
+            <td>{{ a.method }}</td>
+          </tr>
+          <tr *ngIf="!vm.todayRows.length">
+            <td colspan="3" class="text-muted small">No check-ins yet today.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>

@@ -1,0 +1,67 @@
+<ng-container *ngIf="vm$ | async as vm">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div>
+      <h1 class="h4 mb-0">Members</h1>
+      <p class="text-muted small mb-0">Add, edit, search, photos, emergency contacts.</p>
+    </div>
+    <button type="button" class="btn btn-primary btn-sm" (click)="add(vm.plans)">Add member</button>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="form-group mb-3">
+        <input class="form-control form-control-sm" placeholder="Search name, phone, plan…" [(ngModel)]="search" name="q" />
+      </div>
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Name</th>
+              <th>Age</th>
+              <th>Phone</th>
+              <th>Plan</th>
+              <th>Expiry</th>
+              <th>Emergency</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let m of filtered(vm.members)">
+              <td style="width: 56px">
+                <img *ngIf="m.photoUrl" [src]="m.photoUrl" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover" alt="" />
+                <span *ngIf="!m.photoUrl" class="badge badge-secondary">—</span>
+              </td>
+              <td>{{ m.name }}</td>
+              <td>{{ m.age }}</td>
+              <td>{{ m.phone }}</td>
+              <td>{{ m.membershipType }}</td>
+              <td>{{ m.expiryDate }}</td>
+              <td class="small">{{ m.emergencyContactName }}<br />{{ m.emergencyContactPhone }}</td>
+              <td class="text-right text-nowrap">
+                <button type="button" class="btn btn-outline-primary btn-sm mr-1" (click)="edit(m, vm.plans)">Edit</button>
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="remove(m)">Delete</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<div class="member-overlay" *ngIf="formOpen">
+  <div class="modal-backdrop fade show"></div>
+  <div class="modal fade show d-block" tabindex="-1" role="dialog" aria-modal="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <app-member-form
+          [member]="formMember"
+          [plans]="formPlans"
+          (saved)="onMemberSaved($event)"
+          (cancelled)="closeMemberForm()"
+        ></app-member-form>
+      </div>
+    </div>
+  </div>
+</div>
